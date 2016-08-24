@@ -35,43 +35,23 @@
 		<!-- whenExhaustedAction:当“连接池”中active数量达到阀值时，即“链接”资源耗尽时，连接池需要采取的手段, 默认为1(0:抛出异常。1:阻塞，直到有可用链接资源。2:强制创建新的链接资源) -->
 	</bean>
 	
-	<bean id="redisSentinelConfiguration" class="org.springframework.data.redis.connection.RedisSentinelConfiguration">
-		<constructor-arg index="0" type="java.lang.String" value="master001" />
-		<constructor-arg index="1" type="java.util.Set">
-			<set>
-				<value>192.168.75.128:6379</value>
-				<value>192.168.75.129:6379</value>
-			</set>
-		</constructor-arg>
-	</bean>
-
-	<bean id="jeidsConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
-		<!-- Redis sentinel集群配置 -->
-	    <constructor-arg index="0" type="org.springframework.data.redis.connection.RedisSentinelConfiguration" ref="redisSentinelConfiguration" />
-	    <!-- 连接池配置. -->
-	    <constructor-arg index="1" type="redis.clients.jedis.JedisPoolConfig" ref="jedisPoolConfig" />
-	    
-	    <!-- Redis服务主机. -->
-	    <property name="hostName" value="192.168.75.128" />
-	    <!-- Redis服务端口号. -->
-	    <property name="port" value="6379" />
-	    <!-- Redis服务连接密码. -->
-	    <!-- <property name="password" value="${redis.password}" /> -->
-	    <!-- 连超时设置. -->
-	    <property name="timeout" value="15000" />
-	    <!-- 是否使用连接池. -->
-	    <property name="usePool" value="true" />
-	</bean>
-   
-    <!-- redis template definition p表示对该bean里面的属性进行注入，格式为p:属性名=注入的对象 效果与在bean里面使用<property>标签一样 -->
-    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
-        p:connection-factory-ref="jedisConnectionFactory">
+	<bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool"  scope="singleton">
+        <constructor-arg index="0" ref="jedisPoolConfig" />
+        <constructor-arg index="1">
+            <list>
+                <bean class="redis.clients.jedis.JedisShardInfo">
+                    <constructor-arg name="host" value="${redis1.host}" />
+                    <constructor-arg name="port" value="${redis1.port}" />
+                    <!-- 超时时间 默认2秒 -->
+                    <!-- <constructor-arg name="timeout" value="${redis.timeout}" /> -->
+                    <!-- jedis服务器的权值 -->
+                    <!-- <constructor-arg name="weight" value="1" /> -->
+                </bean>
+                <bean class="redis.clients.jedis.JedisShardInfo">
+                    <constructor-arg name="host" value="${redis2.host}" />
+                    <constructor-arg name="port" value="${redis2.port}" />
+                </bean>
+            </list>
+        </constructor-arg>
     </bean>
-	
-	<!-- 对string操作的封装 -->
-    <bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate"
-        p:connection-factory-ref="jedisConnectionFactory" />
-	
-    <!-- <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager"
-        c:template-ref="redisTemplate"/> -->
 </beans>
