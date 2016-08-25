@@ -34,8 +34,7 @@
 	
 	<!-- RedisDao -->
 	<bean id="redisDao" class="org.keith.seckill.dao.cache.RedisDao">
-		<constructor-arg index="0" value="${redis1.host}" />
-		<constructor-arg index="1" value="${redis1.port}" />
+		<constructor-arg index="0" value="${redis1.uri}" />
 	</bean>
 	
 </beans>

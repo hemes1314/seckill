@@ -19,8 +19,8 @@ public class RedisDao {
 
 	private RuntimeSchema<Seckill> schema = RuntimeSchema.createFrom(Seckill.class);
 
-	public RedisDao(String ip, int port) {
-		jedisPool = new JedisPool(ip, port);
+	public RedisDao(String uri) {
+		jedisPool = new JedisPool(uri);
 	}
 
 	public Seckill getSeckill(long seckillId) {

@@ -7,7 +7,7 @@ import java.util.Map;
 
 import redis.clients.jedis.Jedis;
 
-public class Main {
+public class RedisTest {
 	
     private static Jedis jedis; 
     
@@ -126,7 +126,7 @@ public class Main {
 //    	main.testMap();
 //    	
 //    	RedisPool.getJedis().set("newname", "中文测试");
-//        System.out.println(RedisPool.getJedis().get("newname"));
+//    	System.out.println(RedisPool.getJedis().get("newname"));
         
         ShardedRedisPool.getJedis().set("newname", "中文测试");
         System.out.println(ShardedRedisPool.getJedis().get("newname"));

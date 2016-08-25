@@ -22,13 +22,12 @@ public final class ShardedRedisPool {
 			//详细参数可看AC-redis.xml
 			JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 			
-			JedisShardInfo shardInfo1 = new JedisShardInfo("192.168.75.128", 6379, TIMEOUT);
-			shardInfo1.setPassword("123456");
-			JedisShardInfo shardInfo2 = new JedisShardInfo("192.168.75.129", 6379, TIMEOUT);
-			shardInfo2.setPassword("123456");
-			
 			List<JedisShardInfo> shards = new ArrayList<JedisShardInfo>();
+			
+			JedisShardInfo shardInfo1 = new JedisShardInfo("redis://:123456@192.168.75.128:6379/0");
 			shards.add(shardInfo1);
+			
+			JedisShardInfo shardInfo2 = new JedisShardInfo("redis://:123456@192.168.75.130:6379/0");
 			shards.add(shardInfo2);
 			
 			jedisPool = new ShardedJedisPool(jedisPoolConfig, shards);
